@@ -1,19 +1,50 @@
 {% extends "main.html"%}
 
 {% block content %}
-<h1>Habitaciones del hotel</h1>
-{% for room in rooms%}
-<div class="row card mt-3 mb-3 hover-card bg-tr-250">
-    <div class="col p-3">
-        <div class="">
-            {{room.name}} ({{room.room_type__name}})
-        </div>
-        <div>
-            <a href="{% url 'room_details' pk=room.id%}">Ver detalles</a>
-        </div>
-        
+<section class="rooms-page">
+    <div class="rooms-hero">
+        <h1 class="rooms-title">Habitaciones del hotel</h1>
+        <p class="rooms-subtitle">Filtra por nombre y encuentra la habitación en segundos.</p>
     </div>
-    
-</div>
-{% endfor %}
+
+    <div class="rooms-toolbar card border-0 shadow-sm">
+        <form class="rooms-filter-form" method="get" action="{% url 'rooms' %}">
+            <div class="rooms-filter-input-wrap">
+                <i class="bi bi-search rooms-filter-icon"></i>
+                {{ room_filter_form.name }}
+            </div>
+            <button class="btn btn-primary rooms-filter-btn" type="submit">Buscar</button>
+            <a class="btn btn-outline-secondary rooms-filter-clear" href="{% url 'rooms' %}">Limpiar</a>
+        </form>
+        <div class="rooms-results-meta">
+            {% if room_name_filter %}
+            <span>Resultados para <strong>"{{ room_name_filter }}"</strong>: {{ results_count }}</span>
+            {% else %}
+            <span>Total habitaciones: {{ results_count }}</span>
+            {% endif %}
+        </div>
+    </div>
+
+    {% if rooms %}
+    <div class="rooms-grid">
+        {% for room in rooms %}
+        <article class="rooms-card hover-card">
+            <div class="rooms-card-head">
+                <h2 class="rooms-card-title">{{ room.name }}</h2>
+                <span class="rooms-type-chip">{{ room.room_type__name }}</span>
+            </div>
+            <div class="rooms-card-actions">
+                <a class="btn btn-sm btn-outline-primary" href="{% url 'room_details' pk=room.id %}">
+                    Ver detalles
+                </a>
+            </div>
+        </article>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="alert alert-warning rooms-empty-state" role="alert">
+        No se encontraron habitaciones para ese criterio.
+    </div>
+    {% endif %}
+</section>
 {% endblock content%}

@@ -56,3 +56,17 @@ class BookingFormExcluded(ModelForm):
             'total': forms.HiddenInput(),
             'state': forms.HiddenInput(),
         }
+
+
+class RoomFilterForm(forms.Form):
+    name = forms.CharField(
+        required=False,
+        label="Buscar habitación",
+        widget=forms.TextInput(
+            attrs={
+                "placeholder": "Ej: Room 1",
+                "class": "form-control rooms-filter-input",
+                "autocomplete": "off",
+            }
+        ),
+    )
