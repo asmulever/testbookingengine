@@ -218,3 +218,62 @@ body{
 .dashboard-card-teal{
     background-color: #0f766e;
 }
+
+.contact-edit-card input,
+.contact-edit-card select,
+.contact-edit-card textarea{
+    border-radius: 10px;
+    border: 1px solid #d9e1e7;
+    min-height: 42px;
+    width: 100%;
+    padding: 0.5rem 0.75rem;
+}
+
+.contact-edit-card input:focus,
+.contact-edit-card select:focus,
+.contact-edit-card textarea:focus{
+    border-color: #0f766e;
+    box-shadow: 0 0 0 0.2rem rgba(15, 118, 110, 0.15);
+    outline: none;
+}
+
+.booking-create-card input,
+.booking-create-card select,
+.booking-create-card textarea{
+    border-radius: 10px;
+    border: 1px solid #d9e1e7;
+    min-height: 42px;
+    width: 100%;
+    padding: 0.5rem 0.75rem;
+}
+
+.booking-create-card input:focus,
+.booking-create-card select:focus,
+.booking-create-card textarea:focus{
+    border-color: #0f766e;
+    box-shadow: 0 0 0 0.2rem rgba(15, 118, 110, 0.15);
+    outline: none;
+}
+
+.booking-days-panel{
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    background: #f4f9f8;
+    border: 1px solid #d9e1e7;
+    border-radius: 999px;
+    padding: 0.35rem 0.9rem;
+}
+
+.booking-days-label{
+    color: #6c757d;
+    font-weight: 500;
+}
+
+.booking-days-value{
+    color: #0f766e;
+    font-size: 1.1rem;
+    font-weight: 700;
+    min-width: 1.4rem;
+    text-align: center;
+}

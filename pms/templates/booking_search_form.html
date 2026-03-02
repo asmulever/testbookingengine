@@ -1,24 +1,33 @@
 {% extends "main.html"%}
 
 {% block content %}
-<h1>Nueva reserva</h1>
-<form action="{% url 'search'%}" method="POST">
-    {% csrf_token%}
-    {% for field in form %}
-    <div class="row">
-        <div class="col-md-2">{{field.label_tag}}</div>
-        <div class="col-md">{{field}}</div>
+<section class="rooms-page">
+    <div class="rooms-hero">
+        <h1 class="rooms-title">Nueva reserva</h1>
+        <p class="rooms-subtitle">Selecciona fechas y cantidad de huéspedes para ver disponibilidad.</p>
     </div>
-    {% endfor %}
-    <div class="row">
-        <div class="col"><span>Días: </span><span id="total-days"></span></div>
+
+    <div class="card border-0 shadow-sm p-4 booking-create-card">
+        <form action="{% url 'search'%}" method="POST">
+            {% csrf_token%}
+            {% for field in form %}
+            <div class="mb-3">
+                <label class="form-label" for="{{ field.id_for_label }}">{{ field.label }}</label>
+                {{ field }}
+            </div>
+            {% endfor %}
+
+            <div class="booking-days-panel mb-3">
+                <span class="booking-days-label">Días de estancia</span>
+                <span class="booking-days-value" id="total-days">0</span>
+            </div>
+
+            <div class="d-flex gap-2">
+                <button class="btn btn-primary rooms-filter-btn" type="submit">Buscar disponibilidad</button>
+            </div>
+        </form>
     </div>
-    <div class="row">
-        <div class="col-md-auto">
-            <button class="btn btn-primary" type="submit">Buscar disponibilidad</button>
-        </div>
-    </div>
-</form>
+</section>
 {% load static %}
 <script async src="{% static 'js/search_room.js' %}"></script>
 {% endblock content%}
