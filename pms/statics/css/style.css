@@ -184,3 +184,37 @@ body{
     border-radius: 14px;
     border: 1px solid #ffe58f;
 }
+
+.dashboard-grid{
+    display: grid;
+    gap: 0.9rem;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+}
+
+.dashboard-card{
+    width: 100%;
+    min-height: 180px;
+    border: 0;
+    border-radius: 14px;
+    box-shadow: 0 10px 24px rgba(16, 24, 40, 0.08);
+}
+
+.dashboard-card-blue{
+    background-color: #2d5be3;
+}
+
+.dashboard-card-green{
+    background-color: #00ab74;
+}
+
+.dashboard-card-amber{
+    background-color: #eeb258;
+}
+
+.dashboard-card-coral{
+    background-color: #ff7f7f;
+}
+
+.dashboard-card-teal{
+    background-color: #0f766e;
+}
