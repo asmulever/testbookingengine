@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import date, datetime
 from django import forms
 from django.forms import ModelForm
 
@@ -56,3 +56,46 @@ class BookingFormExcluded(ModelForm):
             'total': forms.HiddenInput(),
             'state': forms.HiddenInput(),
         }
+
+
+class BookingDatesEditForm(forms.Form):
+    checkin = forms.DateField(
+        label="Fecha de entrada",
+        input_formats=["%Y-%m-%d"],
+        widget=forms.DateInput(
+            format="%Y-%m-%d",
+            attrs={
+                "type": "date",
+                "max": date(2026, 12, 31).strftime("%Y-%m-%d"),
+                "class": "form-control",
+            }
+        ),
+    )
+    checkout = forms.DateField(
+        label="Fecha de salida",
+        input_formats=["%Y-%m-%d"],
+        widget=forms.DateInput(
+            format="%Y-%m-%d",
+            attrs={
+                "type": "date",
+                "max": date(2026, 12, 31).strftime("%Y-%m-%d"),
+                "class": "form-control",
+            }
+        ),
+    )
+
+    def clean(self):
+        cleaned_data = super().clean()
+        checkin = cleaned_data.get("checkin")
+        checkout = cleaned_data.get("checkout")
+        if not checkin or not checkout:
+            return cleaned_data
+
+        if checkout <= checkin:
+            raise forms.ValidationError("La fecha de salida debe ser posterior a la fecha de entrada")
+
+        max_allowed_date = date(2026, 12, 31)
+        if checkin > max_allowed_date or checkout > max_allowed_date:
+            raise forms.ValidationError("Solo se permiten reservas hasta el 31/12/2026")
+
+        return cleaned_data
