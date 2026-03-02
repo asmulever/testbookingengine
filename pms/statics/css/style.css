@@ -1,5 +1,52 @@
+:root{
+    --app-bg: #cecac4;
+    --app-bg-secondary: #c3bdb4;
+    --app-text: #3e3a35;
+    --app-muted: #6a635a;
+    --app-text-soft: #948b80;
+    --app-surface: #fffdf9;
+    --app-border: #e8e1d6;
+    --app-divider: #ddd3c4;
+    --app-hover: #f5f1ea;
+    --app-navbar-bg: #fffdf9;
+    --app-navbar-text: #3e3a35;
+    --app-primary: #b89c7a;
+    --app-primary-hover: #a98b67;
+    --app-primary-active: #8f7456;
+    --app-primary-soft: #f3ece2;
+    --app-secondary: #6a635a;
+    --app-accent: #8f7456;
+    --state-success-soft: #dce8d8;
+    --state-warning-soft: #f3e6d2;
+    --state-error-soft: #eed9d2;
+}
+
+[data-theme="dark"]{
+    --app-bg: #12161f;
+    --app-text: #e2e8f0;
+    --app-muted: #a7b2c1;
+    --app-surface: #1e2532;
+    --app-border: #303a4b;
+    --app-hover: #2b3546;
+    --app-navbar-bg: #020617;
+    --app-navbar-text: #e5e7eb;
+    --app-primary: #3aa7d8;
+    --app-primary-soft: #173a4d;
+    --app-secondary: #64748b;
+    --app-accent: #f59e0b;
+}
+
+[data-theme="dark"] body{
+    background: var(--app-bg);
+}
+
 body{
-    padding-top: 4em
+    padding-top: 4em;
+    background:
+        radial-gradient(1100px 460px at 10% -8%, rgba(184, 156, 122, 0.10), transparent 52%),
+        radial-gradient(820px 380px at 92% -4%, rgba(143, 116, 86, 0.10), transparent 52%),
+        linear-gradient(180deg, #d7d2cb 0%, var(--app-bg) 48%, var(--app-bg-secondary) 100%);
+    color: var(--app-text);
 }
 
 
@@ -11,7 +58,7 @@ body{
     transition: background-color 250ms linear;
 }
 .hover-card:hover{
-    background: #f0f0f0;
+    background: var(--app-hover);
 }
 
 .tag{
@@ -20,13 +67,12 @@ body{
     border-radius: 0.3em;
 }
 .tag-red{
-
-    background: #ff7a7a;
-    color: white;
+    background: #ff7a7a !important;
+    color: #ffffff !important;
 }
 .tag-green {
-    background: #01a901;
-    color: white;
+    background: #01a901 !important;
+    color: #ffffff !important;
 }
 .card-customization{
     width: 250px;
@@ -41,19 +87,22 @@ body{
 }
 
 .rooms-page{
-    --rooms-surface: #ffffff;
-    --rooms-muted: #6c757d;
-    --rooms-line: #d9e1e7;
-    --rooms-brand: #0f766e;
-    --rooms-brand-soft: #e6f4f3;
+    --rooms-surface: var(--app-surface);
+    --rooms-muted: var(--app-muted);
+    --rooms-line: var(--app-border);
+    --rooms-brand: var(--app-primary);
+    --rooms-brand-soft: var(--app-primary-soft);
 }
 
 .rooms-hero{
-    background: linear-gradient(135deg, #eff6ff 0%, #f0fdf4 100%);
-    border: 1px solid #d9e1e7;
+    background: linear-gradient(135deg, #fffdf9 0%, #f5f1ea 100%);
+    border: 1px solid var(--app-border);
     border-radius: 16px;
     padding: 1.5rem;
     margin-bottom: 1rem;
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.75),
+        0 12px 30px rgba(15, 23, 42, 0.07);
 }
 
 .rooms-title{
@@ -117,8 +166,8 @@ body{
 }
 
 .rooms-filter-btn:hover{
-    background: #0a5e57;
-    border-color: #0a5e57;
+    background: var(--app-primary-hover);
+    border-color: var(--app-primary-hover);
 }
 
 .rooms-filter-clear{
@@ -200,23 +249,132 @@ body{
 }
 
 .dashboard-card-blue{
-    background-color: #2d5be3;
+    background-color: #1000ff !important;
 }
 
 .dashboard-card-green{
-    background-color: #00ab74;
+    background-color: #00ab74 !important;
 }
 
 .dashboard-card-amber{
-    background-color: #eeb258;
+    background-color: #eeb258 !important;
 }
 
 .dashboard-card-coral{
-    background-color: #ff7f7f;
+    background-color: #ff7f7f !important;
 }
 
 .dashboard-card-teal{
-    background-color: #0f766e;
+    background-color: #005f73 !important;
+}
+
+.navbar{
+    background-color: var(--app-navbar-bg) !important;
+}
+
+.navbar .navbar-brand,
+.navbar .nav-link{
+    color: var(--app-navbar-text) !important;
+}
+
+.navbar .nav-link.active{
+    color: var(--app-accent) !important;
+}
+
+.nav-toolbar-btn{
+    border: 1px solid var(--app-divider);
+    color: var(--app-navbar-text);
+    background: transparent;
+}
+
+.nav-toolbar-btn:hover{
+    color: var(--app-navbar-text);
+    background: var(--app-hover);
+}
+
+/* Keep original toolbar colors in both light and dark modes */
+.navbar{
+    background-color: #212529 !important;
+}
+
+.navbar .navbar-brand,
+.navbar .nav-link,
+.navbar .nav-link.active{
+    color: #f8f9fa !important;
+}
+
+.navbar form .form-control{
+    background-color: #ffffff;
+    color: #212529;
+    border-color: #ced4da;
+}
+
+.navbar form .form-control::placeholder{
+    color: #6c757d;
+}
+
+.navbar form .form-control:focus{
+    background-color: #ffffff;
+    color: #212529;
+    border-color: #86b7fe;
+    box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25);
+}
+
+.nav-toolbar-btn{
+    border: 1px solid #f8f9fa;
+    color: #f8f9fa;
+    background: transparent;
+}
+
+.nav-toolbar-btn:hover{
+    color: #212529;
+    background: #f8f9fa;
+}
+
+.theme-toggle-btn{
+    width: 42px;
+    height: 42px;
+    padding: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.theme-toggle-btn i{
+    font-size: 1.05rem;
+}
+
+.card{
+    background-color: var(--app-surface);
+    border-color: var(--app-border);
+    color: var(--app-text);
+}
+
+.form-control{
+    background-color: var(--app-surface);
+    color: var(--app-text);
+    border-color: var(--app-border);
+}
+
+.form-control::placeholder{
+    color: var(--app-text-soft);
+}
+
+.form-control:focus{
+    background-color: var(--app-surface);
+    color: var(--app-text);
+}
+
+[data-theme="dark"] .rooms-hero{
+    background:
+        linear-gradient(130deg, rgba(255, 255, 255, 0.06) 0%, rgba(255, 255, 255, 0.02) 100%),
+        linear-gradient(135deg, #1b2330 0%, #17202b 100%);
+    box-shadow: 0 12px 30px rgba(2, 6, 23, 0.45);
+}
+
+[data-theme="dark"] .rooms-type-chip{
+    background: var(--app-primary-soft);
+    color: #d9f2ff;
 }
 
 .contact-edit-card input,
@@ -232,8 +390,8 @@ body{
 .contact-edit-card input:focus,
 .contact-edit-card select:focus,
 .contact-edit-card textarea:focus{
-    border-color: #0f766e;
-    box-shadow: 0 0 0 0.2rem rgba(15, 118, 110, 0.15);
+    border-color: var(--app-primary);
+    box-shadow: 0 0 0 0.2rem rgba(47, 110, 165, 0.22);
     outline: none;
 }
 
@@ -250,8 +408,8 @@ body{
 .booking-create-card input:focus,
 .booking-create-card select:focus,
 .booking-create-card textarea:focus{
-    border-color: #0f766e;
-    box-shadow: 0 0 0 0.2rem rgba(15, 118, 110, 0.15);
+    border-color: var(--app-primary);
+    box-shadow: 0 0 0 0.2rem rgba(47, 110, 165, 0.22);
     outline: none;
 }
 
@@ -259,19 +417,19 @@ body{
     display: inline-flex;
     align-items: center;
     gap: 0.6rem;
-    background: #f4f9f8;
-    border: 1px solid #d9e1e7;
+    background: var(--app-bg-secondary);
+    border: 1px solid var(--app-border);
     border-radius: 999px;
     padding: 0.35rem 0.9rem;
 }
 
 .booking-days-label{
-    color: #6c757d;
+    color: var(--app-muted);
     font-weight: 500;
 }
 
 .booking-days-value{
-    color: #0f766e;
+    color: var(--app-accent);
     font-size: 1.1rem;
     font-weight: 700;
     min-width: 1.4rem;
