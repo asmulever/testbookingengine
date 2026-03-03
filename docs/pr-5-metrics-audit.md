@@ -56,3 +56,10 @@ La solucion reutiliza datos existentes del dominio `Booking` y evita dependencia
 - Mayor velocidad para identificar cambios de comportamiento operativo.
 - Mejor soporte para conversaciones de negocio (ingresos, cancelacion, tendencia).
 - Base solida para evolucionar a widgets avanzados (forecast, cohortes, alertas).
+
+## Proposed Next Iteration (English)
+- Add date-range presets (`Today`, `Last 7 days`, `Month to date`, `Last 90 days`) with URL persistence for shareable views.
+- Include room-type segmentation to compare demand and cancellation behavior across categories.
+- Add threshold-based alerts (for example: cancellation rate > X%) to surface risks proactively.
+- Provide CSV export for table datasets to support external analysis and stakeholder reporting.
+- Introduce trend forecasting (simple moving average) to estimate short-term bookings and revenue.
