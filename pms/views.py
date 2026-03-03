@@ -174,51 +174,6 @@ class EditBookingView(View):
             return redirect("/")
 
 
-class EditBookingDatesView(View):
-    def get(self, request, pk):
-        booking = Booking.objects.get(id=pk)
-        form = BookingDatesEditForm(
-            initial={
-                "checkin": booking.checkin,
-                "checkout": booking.checkout,
-            }
-        )
-        context = {
-            "booking": booking,
-            "form": form,
-        }
-        return render(request, "edit_booking_dates.html", context)
-
-    def post(self, request, pk):
-        booking = Booking.objects.get(id=pk)
-        form = BookingDatesEditForm(request.POST)
-        if form.is_valid():
-            checkin = form.cleaned_data["checkin"]
-            checkout = form.cleaned_data["checkout"]
-
-            has_overlap = (Booking.objects
-                           .filter(room=booking.room, state="NEW")
-                           .exclude(id=booking.id)
-                           .filter(checkin__lte=checkout, checkout__gte=checkin)
-                           .exists())
-
-            if has_overlap:
-                form.add_error(None, "No hay disponibilidad para las fechas seleccionadas")
-            else:
-                total_days = (checkout - checkin).days
-                booking.checkin = checkin
-                booking.checkout = checkout
-                booking.total = total_days * booking.room.room_type.price
-                booking.save(update_fields=["checkin", "checkout", "total"])
-                return redirect("/")
-
-        context = {
-            "booking": booking,
-            "form": form,
-        }
-        return render(request, "edit_booking_dates.html", context)
-
-
 class DashboardView(View):
     def get(self, request):
         from datetime import date, time, datetime
@@ -253,22 +208,13 @@ class DashboardView(View):
                     .exclude(state="DEL")
                     .aggregate(Sum('total'))
                     )
-        confirmed_bookings = (Booking.objects
-                              .filter(state="NEW")
-                              .values("id")
-                              ).count()
-        total_rooms = Room.objects.values("id").count()
-        occupancy_percentage = 0
-        if total_rooms > 0:
-            occupancy_percentage = (confirmed_bookings / total_rooms) * 100
 
         # preparing context data
         dashboard = {
             'new_bookings': new_bookings,
             'incoming_guests': incoming,
             'outcoming_guests': outcoming,
-            'invoiced': invoiced,
-            'occupancy_percentage': occupancy_percentage,
+            'invoiced': invoiced
 
         }
 
@@ -292,20 +238,9 @@ class RoomDetailsView(View):
 
 class RoomsView(View):
     def get(self, request):
-        room_filter_form = RoomFilterForm(request.GET or None)
-        room_name = ""
-        rooms = Room.objects.all()
-        if room_filter_form.is_valid():
-            room_name = room_filter_form.cleaned_data.get("name", "").strip()
-            if room_name:
-                rooms = rooms.filter(name__icontains=room_name)
-
-        results_count = rooms.count()
-        rooms = rooms.values("name", "room_type__name", "id")
+        # renders a list of rooms
+        rooms = Room.objects.all().values("name", "room_type__name", "id")
         context = {
-            'rooms': rooms,
-            'room_filter_form': room_filter_form,
-            'room_name_filter': room_name,
-            'results_count': results_count,
+            'rooms': rooms
         }
         return render(request, "rooms.html", context)
