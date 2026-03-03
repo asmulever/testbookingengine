@@ -1,10 +1,28 @@
 {% extends "main.html"%}
 
 {% block content %}
-<section class="rooms-page">
-    <div class="rooms-hero">
-        <h1 class="rooms-title">Métricas y Auditoría</h1>
-        <p class="rooms-subtitle">Monitoreo diario y mensual con comparación de períodos y trazabilidad operativa.</p>
+<section class="rooms-page audit-page">
+    <div class="rooms-hero audit-hero">
+        <div>
+            <h1 class="rooms-title">Auditoría Operativa</h1>
+            <p class="rooms-subtitle">Indicadores diarios y mensuales para seguimiento comercial, control de cancelaciones y comparación de desempeño.</p>
+        </div>
+        <div class="audit-period-badge">Corte: {{ today|date:"d/m/Y" }}</div>
+    </div>
+
+    <div class="audit-toolbar card border-0 shadow-sm mb-4">
+        <div class="card-body d-flex flex-wrap gap-2 align-items-center justify-content-between">
+            <div class="btn-group" role="group" aria-label="Vista de periodo">
+                <button type="button" class="btn btn-sm btn-outline-secondary audit-toggle-btn is-active" data-target="daily-panel">Vista diaria</button>
+                <button type="button" class="btn btn-sm btn-outline-secondary audit-toggle-btn" data-target="monthly-panel">Vista mensual</button>
+                <button type="button" class="btn btn-sm btn-outline-secondary audit-toggle-btn" data-target="both-panels">Vista combinada</button>
+            </div>
+            <div class="d-flex flex-wrap gap-2">
+                <button type="button" class="btn btn-sm btn-outline-secondary audit-widget-btn is-active" data-widget="audit-table">Tabla</button>
+                <button type="button" class="btn btn-sm btn-outline-secondary audit-widget-btn is-active" data-widget="audit-bars">Barras</button>
+                <button type="button" class="btn btn-sm btn-outline-secondary audit-widget-btn is-active" data-widget="audit-summary">Resumen ejecutivo</button>
+            </div>
+        </div>
     </div>
 
     <div class="metrics-grid mb-4">
@@ -42,104 +60,239 @@
         </article>
     </div>
 
-    <div class="row g-3 mb-4">
-        <div class="col-12 col-lg-6">
-            <div class="card border-0 shadow-sm">
-                <div class="card-body">
-                    <h5 class="mb-3">Auditoría Diaria (últimos 7 días)</h5>
-                    <div class="table-responsive">
-                        <table class="table table-sm align-middle mb-0">
-                            <thead>
-                                <tr>
-                                    <th>Día</th>
-                                    <th>Creadas</th>
-                                    <th>Canceladas</th>
-                                    <th>Facturación</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% for row in daily_audit %}
-                                <tr>
-                                    <td>{{ row.label }}</td>
-                                    <td>{{ row.created_count }}</td>
-                                    <td>{{ row.cancelled_count }}</td>
-                                    <td>€ {{ row.revenue|floatformat:2 }}</td>
-                                </tr>
-                                {% endfor %}
-                            </tbody>
-                        </table>
+    <div id="daily-panel" class="audit-panel">
+        <div class="row g-3 mb-4 audit-widget audit-summary">
+            <div class="col-12 col-md-6 col-xl-3">
+                <div class="card border-0 shadow-sm h-100">
+                    <div class="card-body">
+                        <div class="audit-mini-title">Cancelación 7 días</div>
+                        <div class="audit-mini-value">{{ daily_cancellation_rate|floatformat:1 }}%</div>
+                        <div class="audit-mini-sub">Base: {{ daily_current.created_count }} creadas hoy</div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 col-md-6 col-xl-3">
+                <div class="card border-0 shadow-sm h-100">
+                    <div class="card-body">
+                        <div class="audit-mini-title">Ticket promedio diario</div>
+                        <div class="audit-mini-value">€ {{ daily_avg_ticket|floatformat:2 }}</div>
+                        <div class="audit-mini-sub">Solo reservas confirmadas</div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 col-md-6 col-xl-3">
+                <div class="card border-0 shadow-sm h-100">
+                    <div class="card-body">
+                        <div class="audit-mini-title">Pico facturación (día)</div>
+                        <div class="audit-mini-value">{{ peak_day.label }}</div>
+                        <div class="audit-mini-sub">€ {{ peak_day.revenue|floatformat:2 }}</div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 col-md-6 col-xl-3">
+                <div class="card border-0 shadow-sm h-100">
+                    <div class="card-body">
+                        <div class="audit-mini-title">Facturación 7 días</div>
+                        <div class="audit-mini-value">€ {{ total_daily_revenue|floatformat:2 }}</div>
+                        <div class="audit-mini-sub">Acumulado operativo</div>
                     </div>
                 </div>
             </div>
         </div>
-        <div class="col-12 col-lg-6">
-            <div class="card border-0 shadow-sm">
-                <div class="card-body">
-                    <h5 class="mb-3">Auditoría Mensual (últimos 6 meses)</h5>
-                    <div class="table-responsive">
-                        <table class="table table-sm align-middle mb-0">
-                            <thead>
-                                <tr>
-                                    <th>Mes</th>
-                                    <th>Creadas</th>
-                                    <th>Canceladas</th>
-                                    <th>Facturación</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% for row in monthly_audit %}
-                                <tr>
-                                    <td>{{ row.label }}</td>
-                                    <td>{{ row.created_count }}</td>
-                                    <td>{{ row.cancelled_count }}</td>
-                                    <td>€ {{ row.revenue|floatformat:2 }}</td>
-                                </tr>
-                                {% endfor %}
-                            </tbody>
-                        </table>
+
+        <div class="row g-3 mb-4">
+            <div class="col-12 col-lg-6 audit-widget audit-table">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-body">
+                        <h5 class="mb-3">Auditoría Diaria (últimos 7 días)</h5>
+                        <div class="table-responsive">
+                            <table class="table table-sm align-middle mb-0">
+                                <thead>
+                                    <tr>
+                                        <th>Día</th>
+                                        <th>Creadas</th>
+                                        <th>Canceladas</th>
+                                        <th>Facturación</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for row in daily_audit %}
+                                    <tr>
+                                        <td>{{ row.label }}</td>
+                                        <td>{{ row.created_count }}</td>
+                                        <td>{{ row.cancelled_count }}</td>
+                                        <td>€ {{ row.revenue|floatformat:2 }}</td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-12 col-lg-6 audit-widget audit-bars">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-body">
+                        <h5 class="mb-3">Tendencia diaria (barras normalizadas)</h5>
+                        {% for row in daily_audit %}
+                        <div class="audit-bar-row">
+                            <div class="audit-bar-label">{{ row.label }}</div>
+                            <div class="audit-bar-track">
+                                <div class="audit-bar audit-bar-created" style="width: {{ row.created_pct }}%"></div>
+                            </div>
+                            <div class="audit-bar-number">{{ row.created_count }}</div>
+                        </div>
+                        <div class="audit-bar-row">
+                            <div class="audit-bar-label">&nbsp;</div>
+                            <div class="audit-bar-track">
+                                <div class="audit-bar audit-bar-revenue" style="width: {{ row.revenue_pct }}%"></div>
+                            </div>
+                            <div class="audit-bar-number">€ {{ row.revenue|floatformat:0 }}</div>
+                        </div>
+                        {% endfor %}
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <div class="card border-0 shadow-sm">
-        <div class="card-body">
-            <h5 class="mb-3">Comparación Mensual</h5>
-            <div class="row g-3">
-                <div class="col-12 col-md-3">
-                    <div class="metrics-compact">
-                        <div class="small">Reservas creadas</div>
-                        <div class="fw-bold">{{ monthly_current.created_count }}</div>
-                        <div class="metrics-delta metrics-{{ monthly_comparison.created_count.direction }}">
-                            {{ monthly_comparison.created_count.percent|floatformat:1 }}% vs mes anterior
+    <div id="monthly-panel" class="audit-panel d-none">
+        <div class="row g-3 mb-4 audit-widget audit-summary">
+            <div class="col-12 col-md-6 col-xl-3">
+                <div class="card border-0 shadow-sm h-100">
+                    <div class="card-body">
+                        <div class="audit-mini-title">Cancelación mensual</div>
+                        <div class="audit-mini-value">{{ monthly_cancellation_rate|floatformat:1 }}%</div>
+                        <div class="audit-mini-sub">Ventana 6 meses</div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 col-md-6 col-xl-3">
+                <div class="card border-0 shadow-sm h-100">
+                    <div class="card-body">
+                        <div class="audit-mini-title">Ticket promedio mensual</div>
+                        <div class="audit-mini-value">€ {{ monthly_avg_ticket|floatformat:2 }}</div>
+                        <div class="audit-mini-sub">Mes en curso</div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 col-md-6 col-xl-3">
+                <div class="card border-0 shadow-sm h-100">
+                    <div class="card-body">
+                        <div class="audit-mini-title">Pico facturación (mes)</div>
+                        <div class="audit-mini-value">{{ peak_month.label }}</div>
+                        <div class="audit-mini-sub">€ {{ peak_month.revenue|floatformat:2 }}</div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 col-md-6 col-xl-3">
+                <div class="card border-0 shadow-sm h-100">
+                    <div class="card-body">
+                        <div class="audit-mini-title">Facturación 6 meses</div>
+                        <div class="audit-mini-value">€ {{ total_monthly_revenue|floatformat:2 }}</div>
+                        <div class="audit-mini-sub">Acumulado estratégico</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row g-3 mb-4">
+            <div class="col-12 col-lg-6 audit-widget audit-table">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-body">
+                        <h5 class="mb-3">Auditoría Mensual (últimos 6 meses)</h5>
+                        <div class="table-responsive">
+                            <table class="table table-sm align-middle mb-0">
+                                <thead>
+                                    <tr>
+                                        <th>Mes</th>
+                                        <th>Creadas</th>
+                                        <th>Canceladas</th>
+                                        <th>Facturación</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for row in monthly_audit %}
+                                    <tr>
+                                        <td>{{ row.label }}</td>
+                                        <td>{{ row.created_count }}</td>
+                                        <td>{{ row.cancelled_count }}</td>
+                                        <td>€ {{ row.revenue|floatformat:2 }}</td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
                         </div>
                     </div>
                 </div>
-                <div class="col-12 col-md-3">
-                    <div class="metrics-compact">
-                        <div class="small">Confirmadas</div>
-                        <div class="fw-bold">{{ monthly_current.confirmed_count }}</div>
-                        <div class="metrics-delta metrics-{{ monthly_comparison.confirmed_count.direction }}">
-                            {{ monthly_comparison.confirmed_count.percent|floatformat:1 }}% vs mes anterior
+            </div>
+
+            <div class="col-12 col-lg-6 audit-widget audit-bars">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-body">
+                        <h5 class="mb-3">Tendencia mensual (barras normalizadas)</h5>
+                        {% for row in monthly_audit %}
+                        <div class="audit-bar-row">
+                            <div class="audit-bar-label">{{ row.label }}</div>
+                            <div class="audit-bar-track">
+                                <div class="audit-bar audit-bar-created" style="width: {{ row.created_pct }}%"></div>
+                            </div>
+                            <div class="audit-bar-number">{{ row.created_count }}</div>
                         </div>
+                        <div class="audit-bar-row">
+                            <div class="audit-bar-label">&nbsp;</div>
+                            <div class="audit-bar-track">
+                                <div class="audit-bar audit-bar-revenue" style="width: {{ row.revenue_pct }}%"></div>
+                            </div>
+                            <div class="audit-bar-number">€ {{ row.revenue|floatformat:0 }}</div>
+                        </div>
+                        {% endfor %}
                     </div>
                 </div>
-                <div class="col-12 col-md-3">
-                    <div class="metrics-compact">
-                        <div class="small">Canceladas</div>
-                        <div class="fw-bold">{{ monthly_current.cancelled_count }}</div>
-                        <div class="metrics-delta metrics-{{ monthly_comparison.cancelled_count.direction }}">
-                            {{ monthly_comparison.cancelled_count.percent|floatformat:1 }}% vs mes anterior
+            </div>
+        </div>
+    </div>
+
+    <div id="both-panels" class="audit-panel d-none">
+        <div class="card border-0 shadow-sm">
+            <div class="card-body">
+                <h5 class="mb-3">Comparación mensual consolidada</h5>
+                <div class="row g-3">
+                    <div class="col-12 col-md-3">
+                        <div class="metrics-compact">
+                            <div class="small">Reservas creadas</div>
+                            <div class="fw-bold">{{ monthly_current.created_count }}</div>
+                            <div class="metrics-delta metrics-{{ monthly_comparison.created_count.direction }}">
+                                {{ monthly_comparison.created_count.percent|floatformat:1 }}% vs mes anterior
+                            </div>
                         </div>
                     </div>
-                </div>
-                <div class="col-12 col-md-3">
-                    <div class="metrics-compact">
-                        <div class="small">Facturación</div>
-                        <div class="fw-bold">€ {{ monthly_current.revenue|floatformat:2 }}</div>
-                        <div class="metrics-delta metrics-{{ monthly_comparison.revenue.direction }}">
-                            {{ monthly_comparison.revenue.percent|floatformat:1 }}% vs mes anterior
+                    <div class="col-12 col-md-3">
+                        <div class="metrics-compact">
+                            <div class="small">Confirmadas</div>
+                            <div class="fw-bold">{{ monthly_current.confirmed_count }}</div>
+                            <div class="metrics-delta metrics-{{ monthly_comparison.confirmed_count.direction }}">
+                                {{ monthly_comparison.confirmed_count.percent|floatformat:1 }}% vs mes anterior
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-3">
+                        <div class="metrics-compact">
+                            <div class="small">Canceladas</div>
+                            <div class="fw-bold">{{ monthly_current.cancelled_count }}</div>
+                            <div class="metrics-delta metrics-{{ monthly_comparison.cancelled_count.direction }}">
+                                {{ monthly_comparison.cancelled_count.percent|floatformat:1 }}% vs mes anterior
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-3">
+                        <div class="metrics-compact">
+                            <div class="small">Facturación</div>
+                            <div class="fw-bold">€ {{ monthly_current.revenue|floatformat:2 }}</div>
+                            <div class="metrics-delta metrics-{{ monthly_comparison.revenue.direction }}">
+                                {{ monthly_comparison.revenue.percent|floatformat:1 }}% vs mes anterior
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -147,4 +300,44 @@
         </div>
     </div>
 </section>
+
+<script>
+(function () {
+    const periodButtons = Array.from(document.querySelectorAll('.audit-toggle-btn'));
+    const panels = {
+        'daily-panel': document.getElementById('daily-panel'),
+        'monthly-panel': document.getElementById('monthly-panel'),
+        'both-panels': document.getElementById('both-panels')
+    };
+
+    periodButtons.forEach((button) => {
+        button.addEventListener('click', () => {
+            periodButtons.forEach((btn) => btn.classList.remove('is-active'));
+            button.classList.add('is-active');
+            const selected = button.getAttribute('data-target');
+            Object.entries(panels).forEach(([key, panel]) => {
+                if (!panel) {
+                    return;
+                }
+                if (key === selected) {
+                    panel.classList.remove('d-none');
+                } else {
+                    panel.classList.add('d-none');
+                }
+            });
+        });
+    });
+
+    const widgetButtons = Array.from(document.querySelectorAll('.audit-widget-btn'));
+    widgetButtons.forEach((button) => {
+        button.addEventListener('click', () => {
+            button.classList.toggle('is-active');
+            const widgetName = button.getAttribute('data-widget');
+            document.querySelectorAll('.' + widgetName).forEach((item) => {
+                item.classList.toggle('d-none');
+            });
+        });
+    });
+})();
+</script>
 {% endblock content%}

@@ -352,6 +352,33 @@ class MetricsAuditView(View):
             })
             month_iter = (month_iter + timedelta(days=32)).replace(day=1)
 
+        daily_max_created = max((item["created_count"] for item in daily_audit), default=0)
+        daily_max_revenue = max((item["revenue"] for item in daily_audit), default=0)
+        for item in daily_audit:
+            item["created_pct"] = 0 if daily_max_created == 0 else int((item["created_count"] / daily_max_created) * 100)
+            item["revenue_pct"] = 0 if daily_max_revenue == 0 else int((item["revenue"] / daily_max_revenue) * 100)
+
+        monthly_max_created = max((item["created_count"] for item in monthly_audit), default=0)
+        monthly_max_revenue = max((item["revenue"] for item in monthly_audit), default=0)
+        for item in monthly_audit:
+            item["created_pct"] = 0 if monthly_max_created == 0 else int((item["created_count"] / monthly_max_created) * 100)
+            item["revenue_pct"] = 0 if monthly_max_revenue == 0 else int((item["revenue"] / monthly_max_revenue) * 100)
+
+        total_daily_created = sum(item["created_count"] for item in daily_audit)
+        total_daily_cancelled = sum(item["cancelled_count"] for item in daily_audit)
+        total_daily_revenue = sum(item["revenue"] for item in daily_audit)
+        total_monthly_created = sum(item["created_count"] for item in monthly_audit)
+        total_monthly_cancelled = sum(item["cancelled_count"] for item in monthly_audit)
+        total_monthly_revenue = sum(item["revenue"] for item in monthly_audit)
+
+        daily_cancellation_rate = 0 if total_daily_created == 0 else (total_daily_cancelled / total_daily_created) * 100
+        monthly_cancellation_rate = 0 if total_monthly_created == 0 else (total_monthly_cancelled / total_monthly_created) * 100
+        daily_avg_ticket = 0 if daily_current["confirmed_count"] == 0 else daily_current["revenue"] / daily_current["confirmed_count"]
+        monthly_avg_ticket = 0 if monthly_current["confirmed_count"] == 0 else monthly_current["revenue"] / monthly_current["confirmed_count"]
+
+        peak_day = max(daily_audit, key=lambda x: x["revenue"], default={"label": "-", "revenue": 0})
+        peak_month = max(monthly_audit, key=lambda x: x["revenue"], default={"label": "-", "revenue": 0})
+
         context = {
             "daily_current": daily_current,
             "daily_previous": daily_previous,
@@ -361,6 +388,14 @@ class MetricsAuditView(View):
             "monthly_comparison": monthly_comparison,
             "daily_audit": daily_audit,
             "monthly_audit": monthly_audit,
+            "daily_cancellation_rate": daily_cancellation_rate,
+            "monthly_cancellation_rate": monthly_cancellation_rate,
+            "daily_avg_ticket": daily_avg_ticket,
+            "monthly_avg_ticket": monthly_avg_ticket,
+            "total_daily_revenue": total_daily_revenue,
+            "total_monthly_revenue": total_monthly_revenue,
+            "peak_day": peak_day,
+            "peak_month": peak_month,
             "today": today,
         }
         return render(request, "metrics_audit.html", context)

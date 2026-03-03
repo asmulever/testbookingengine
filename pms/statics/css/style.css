@@ -76,3 +76,107 @@ body{
     padding: 0.75rem;
     height: 100%;
 }
+
+.audit-page{
+    padding-bottom: 2rem;
+}
+
+.audit-hero{
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    align-items: flex-start;
+}
+
+.audit-period-badge{
+    border: 1px solid #d8e0e8;
+    border-radius: 999px;
+    padding: 0.35rem 0.75rem;
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: #425466;
+    background: #f7f9fc;
+}
+
+.audit-toolbar .btn{
+    border-radius: 999px;
+}
+
+.audit-toggle-btn.is-active,
+.audit-widget-btn.is-active{
+    background: #1f4a6d;
+    border-color: #1f4a6d;
+    color: #fff;
+}
+
+.audit-mini-title{
+    font-size: 0.8rem;
+    color: #586573;
+    font-weight: 600;
+}
+
+.audit-mini-value{
+    font-size: 1.45rem;
+    font-weight: 700;
+    color: #1f2a36;
+    margin-top: 0.3rem;
+}
+
+.audit-mini-sub{
+    margin-top: 0.2rem;
+    color: #7a8794;
+    font-size: 0.8rem;
+}
+
+.audit-bar-row{
+    display: grid;
+    grid-template-columns: 90px 1fr auto;
+    gap: 0.6rem;
+    align-items: center;
+    margin-bottom: 0.4rem;
+}
+
+.audit-bar-label{
+    color: #5f6b76;
+    font-size: 0.78rem;
+    font-weight: 600;
+}
+
+.audit-bar-track{
+    width: 100%;
+    height: 10px;
+    border-radius: 999px;
+    background: #edf1f5;
+    overflow: hidden;
+}
+
+.audit-bar{
+    height: 10px;
+    border-radius: 999px;
+}
+
+.audit-bar-created{
+    background: linear-gradient(90deg, #1f4a6d, #2f6f9f);
+}
+
+.audit-bar-revenue{
+    background: linear-gradient(90deg, #2c6b2f, #49a356);
+}
+
+.audit-bar-number{
+    font-size: 0.78rem;
+    color: #4d5965;
+    font-weight: 600;
+    min-width: 84px;
+    text-align: right;
+}
+
+@media (max-width: 768px){
+    .audit-hero{
+        flex-direction: column;
+    }
+
+    .audit-bar-row{
+        grid-template-columns: 68px 1fr auto;
+    }
+}

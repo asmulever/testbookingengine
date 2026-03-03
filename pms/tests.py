@@ -41,10 +41,10 @@ class MetricsAuditTests(TestCase):
     def test_metrics_audit_view_renders_and_contains_sections(self):
         response = self.client.get(reverse("metrics_audit"))
         self.assertEqual(response.status_code, 200)
-        self.assertContains(response, "Métricas y Auditoría")
+        self.assertContains(response, "Auditoría Operativa")
         self.assertContains(response, "Auditoría Diaria")
         self.assertContains(response, "Auditoría Mensual")
-        self.assertContains(response, "Comparación Mensual")
+        self.assertContains(response, "Comparación mensual consolidada")
 
     def test_metrics_audit_daily_metrics_values(self):
         response = self.client.get(reverse("metrics_audit"))
