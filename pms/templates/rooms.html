@@ -7,16 +7,19 @@
         <p class="rooms-subtitle">Filtra por nombre y encuentra la habitación en segundos.</p>
     </div>
 
-    <div class="rooms-toolbar card border-0 shadow-sm">
+    <div class="rooms-toolbar card border-0 shadow-sm rooms-controls-panel">
         <form class="rooms-filter-form" method="get" action="{% url 'rooms' %}">
-            <div class="rooms-filter-input-wrap">
-                <i class="bi bi-search rooms-filter-icon"></i>
-                {{ room_filter_form.name }}
+            <div class="rooms-filter-field">
+                <label class="rooms-filter-label" for="{{ room_filter_form.name.id_for_label }}">Nombre de habitación</label>
+                <div class="rooms-filter-input-wrap">
+                    <i class="bi bi-search rooms-filter-icon"></i>
+                    {{ room_filter_form.name }}
+                </div>
             </div>
             <button class="btn btn-primary rooms-filter-btn" type="submit">Buscar</button>
             <a class="btn btn-outline-secondary rooms-filter-clear" href="{% url 'rooms' %}">Limpiar</a>
         </form>
-        <div class="rooms-results-meta">
+        <div class="rooms-results-meta rooms-results-chip">
             {% if room_name_filter %}
             <span>Resultados para <strong>"{{ room_name_filter }}"</strong>: {{ results_count }}</span>
             {% else %}

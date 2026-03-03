@@ -75,17 +75,32 @@ body{
     margin-bottom: 1.2rem;
 }
 
+.rooms-controls-panel{
+    border: 1px solid var(--rooms-line);
+}
+
 .rooms-filter-form{
     display: flex;
-    align-items: center;
+    align-items: flex-end;
     gap: 0.6rem;
     flex-wrap: wrap;
 }
 
+.rooms-filter-field{
+    flex: 1 1 360px;
+    min-width: 240px;
+}
+
+.rooms-filter-label{
+    display: inline-block;
+    margin-bottom: 0.35rem;
+    color: var(--rooms-muted);
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+
 .rooms-filter-input-wrap{
     position: relative;
-    flex: 1 1 320px;
-    min-width: 220px;
 }
 
 .rooms-filter-icon{
@@ -130,6 +145,14 @@ body{
     margin-top: 0.75rem;
     color: var(--rooms-muted);
     font-size: 0.95rem;
+}
+
+.rooms-results-chip{
+    display: inline-flex;
+    border: 1px solid var(--rooms-line);
+    border-radius: 999px;
+    padding: 0.35rem 0.8rem;
+    background: rgba(15, 118, 110, 0.05);
 }
 
 .rooms-grid{
