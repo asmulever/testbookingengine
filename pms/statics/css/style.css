@@ -89,42 +89,53 @@ body{
 }
 
 .audit-period-badge{
-    border: 1px solid #d8e0e8;
+    border: 1px solid var(--app-border);
     border-radius: 999px;
     padding: 0.35rem 0.75rem;
     font-size: 0.78rem;
     font-weight: 600;
-    color: #425466;
-    background: #f7f9fc;
+    color: var(--app-muted);
+    background: var(--app-surface);
 }
 
 .audit-toolbar .btn{
     border-radius: 999px;
 }
 
+.audit-toolbar .btn-outline-secondary{
+    color: var(--app-text);
+    border-color: var(--app-border);
+}
+
+.audit-toolbar .btn-outline-secondary:hover{
+    color: var(--app-text);
+    border-color: var(--app-border);
+    background: var(--app-hover);
+}
+
 .audit-toggle-btn.is-active,
 .audit-widget-btn.is-active{
-    background: #1f4a6d;
-    border-color: #1f4a6d;
+    background: var(--app-primary);
+    border-color: var(--app-primary);
     color: #fff;
 }
 
 .audit-mini-title{
     font-size: 0.8rem;
-    color: #586573;
+    color: var(--app-muted);
     font-weight: 600;
 }
 
 .audit-mini-value{
     font-size: 1.45rem;
     font-weight: 700;
-    color: #1f2a36;
+    color: var(--app-text);
     margin-top: 0.3rem;
 }
 
 .audit-mini-sub{
     margin-top: 0.2rem;
-    color: #7a8794;
+    color: var(--app-muted);
     font-size: 0.8rem;
 }
 
@@ -137,7 +148,7 @@ body{
 }
 
 .audit-bar-label{
-    color: #5f6b76;
+    color: var(--app-muted);
     font-size: 0.78rem;
     font-weight: 600;
 }
@@ -146,7 +157,7 @@ body{
     width: 100%;
     height: 10px;
     border-radius: 999px;
-    background: #edf1f5;
+    background: var(--app-hover);
     overflow: hidden;
 }
 
@@ -165,10 +176,55 @@ body{
 
 .audit-bar-number{
     font-size: 0.78rem;
-    color: #4d5965;
+    color: var(--app-muted);
     font-weight: 600;
     min-width: 84px;
     text-align: right;
+}
+
+.audit-page .table{
+    color: var(--app-text);
+}
+
+.audit-page .table thead th{
+    color: var(--app-muted);
+    font-weight: 700;
+}
+
+.audit-page .table > :not(caption) > * > *{
+    border-color: var(--app-border);
+}
+
+[data-theme="dark"] .audit-period-badge{
+    background: #111827;
+    border-color: #334155;
+    color: #cbd5e1;
+}
+
+[data-theme="dark"] .audit-toolbar .btn-outline-secondary{
+    color: #cbd5e1;
+    border-color: #475569;
+}
+
+[data-theme="dark"] .audit-toolbar .btn-outline-secondary:hover{
+    color: #e2e8f0;
+    border-color: #64748b;
+    background: #334155;
+}
+
+[data-theme="dark"] .audit-toggle-btn.is-active,
+[data-theme="dark"] .audit-widget-btn.is-active{
+    background: #3aa7d8;
+    border-color: #3aa7d8;
+    color: #04111b;
+}
+
+[data-theme="dark"] .audit-bar-created{
+    background: linear-gradient(90deg, #3aa7d8, #60c0ea);
+}
+
+[data-theme="dark"] .audit-bar-revenue{
+    background: linear-gradient(90deg, #22c55e, #4ade80);
 }
 
 @media (max-width: 768px){
