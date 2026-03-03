@@ -39,3 +39,40 @@ body{
     height: 100%;
     align-items: center;
 }
+.metrics-grid{
+    display: grid;
+    gap: 0.9rem;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+}
+
+.metrics-value{
+    font-size: 1.8rem;
+    font-weight: 700;
+    line-height: 1.15;
+}
+
+.metrics-delta{
+    font-size: 0.9rem;
+    font-weight: 600;
+    margin-top: 0.35rem;
+}
+
+.metrics-up{
+    color: #0f766e;
+}
+
+.metrics-down{
+    color: #c2410c;
+}
+
+.metrics-flat{
+    color: #6c757d;
+}
+
+.metrics-compact{
+    background: #f5f5f5;
+    border: 1px solid #e7e7e7;
+    border-radius: 12px;
+    padding: 0.75rem;
+    height: 100%;
+}

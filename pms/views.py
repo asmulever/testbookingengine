@@ -1,4 +1,7 @@
+from datetime import date, timedelta
+
 from django.db.models import F, Q, Count, Sum
+from django.db.models.functions import TruncDate, TruncMonth
 from django.shortcuts import render, redirect
 from django.utils.decorators import method_decorator
 from django.views import View
@@ -244,3 +247,120 @@ class RoomsView(View):
             'rooms': rooms
         }
         return render(request, "rooms.html", context)
+
+
+class MetricsAuditView(View):
+    @staticmethod
+    def _period_metrics(start_date, end_date):
+        bookings = Booking.objects.filter(created__date__gte=start_date, created__date__lte=end_date)
+        confirmed = bookings.exclude(state="DEL")
+        return {
+            "created_count": bookings.count(),
+            "confirmed_count": confirmed.count(),
+            "cancelled_count": bookings.filter(state="DEL").count(),
+            "revenue": float(confirmed.aggregate(total=Sum("total"))["total"] or 0),
+        }
+
+    @staticmethod
+    def _comparison(current, previous):
+        delta = current - previous
+        if previous == 0:
+            percent = 0 if current == 0 else 100
+        else:
+            percent = (delta / previous) * 100
+        direction = "up" if delta > 0 else "down" if delta < 0 else "flat"
+        return {
+            "delta": delta,
+            "percent": percent,
+            "direction": direction,
+        }
+
+    def get(self, request):
+        today = date.today()
+        yesterday = today - timedelta(days=1)
+        month_start = today.replace(day=1)
+        previous_month_end = month_start - timedelta(days=1)
+        previous_month_start = previous_month_end.replace(day=1)
+
+        daily_current = self._period_metrics(today, today)
+        daily_previous = self._period_metrics(yesterday, yesterday)
+        monthly_current = self._period_metrics(month_start, today)
+        monthly_previous = self._period_metrics(previous_month_start, previous_month_end)
+
+        daily_comparison = {
+            "created_count": self._comparison(daily_current["created_count"], daily_previous["created_count"]),
+            "confirmed_count": self._comparison(daily_current["confirmed_count"], daily_previous["confirmed_count"]),
+            "cancelled_count": self._comparison(daily_current["cancelled_count"], daily_previous["cancelled_count"]),
+            "revenue": self._comparison(daily_current["revenue"], daily_previous["revenue"]),
+        }
+        monthly_comparison = {
+            "created_count": self._comparison(monthly_current["created_count"], monthly_previous["created_count"]),
+            "confirmed_count": self._comparison(monthly_current["confirmed_count"], monthly_previous["confirmed_count"]),
+            "cancelled_count": self._comparison(monthly_current["cancelled_count"], monthly_previous["cancelled_count"]),
+            "revenue": self._comparison(monthly_current["revenue"], monthly_previous["revenue"]),
+        }
+
+        last_7_days_start = today - timedelta(days=6)
+        raw_daily = (Booking.objects
+                     .filter(created__date__gte=last_7_days_start, created__date__lte=today)
+                     .annotate(period=TruncDate("created"))
+                     .values("period")
+                     .annotate(
+                         created_count=Count("id"),
+                         cancelled_count=Count("id", filter=Q(state="DEL")),
+                         revenue=Sum("total", filter=~Q(state="DEL")),
+                     )
+                     .order_by("period"))
+        daily_map = {entry["period"]: entry for entry in raw_daily}
+        daily_audit = []
+        for day_offset in range(6, -1, -1):
+            day = today - timedelta(days=day_offset)
+            entry = daily_map.get(day, {})
+            daily_audit.append({
+                "label": day.strftime("%d/%m"),
+                "created_count": entry.get("created_count", 0),
+                "cancelled_count": entry.get("cancelled_count", 0),
+                "revenue": float(entry.get("revenue") or 0),
+            })
+
+        month_cursor = month_start
+        for _ in range(5):
+            month_cursor = (month_cursor - timedelta(days=1)).replace(day=1)
+        raw_monthly = (Booking.objects
+                       .filter(created__date__gte=month_cursor, created__date__lte=today)
+                       .annotate(period=TruncMonth("created"))
+                       .values("period")
+                       .annotate(
+                           created_count=Count("id"),
+                           cancelled_count=Count("id", filter=Q(state="DEL")),
+                           revenue=Sum("total", filter=~Q(state="DEL")),
+                       )
+                       .order_by("period"))
+        monthly_map = {
+            (entry["period"].year, entry["period"].month): entry for entry in raw_monthly
+        }
+        monthly_audit = []
+        month_iter = month_cursor
+        for _ in range(6):
+            key = (month_iter.year, month_iter.month)
+            entry = monthly_map.get(key, {})
+            monthly_audit.append({
+                "label": month_iter.strftime("%b %Y"),
+                "created_count": entry.get("created_count", 0),
+                "cancelled_count": entry.get("cancelled_count", 0),
+                "revenue": float(entry.get("revenue") or 0),
+            })
+            month_iter = (month_iter + timedelta(days=32)).replace(day=1)
+
+        context = {
+            "daily_current": daily_current,
+            "daily_previous": daily_previous,
+            "monthly_current": monthly_current,
+            "monthly_previous": monthly_previous,
+            "daily_comparison": daily_comparison,
+            "monthly_comparison": monthly_comparison,
+            "daily_audit": daily_audit,
+            "monthly_audit": monthly_audit,
+            "today": today,
+        }
+        return render(request, "metrics_audit.html", context)

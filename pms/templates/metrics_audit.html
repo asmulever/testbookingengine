@@ -1,0 +1,150 @@
+{% extends "main.html"%}
+
+{% block content %}
+<section class="rooms-page">
+    <div class="rooms-hero">
+        <h1 class="rooms-title">Métricas y Auditoría</h1>
+        <p class="rooms-subtitle">Monitoreo diario y mensual con comparación de períodos y trazabilidad operativa.</p>
+    </div>
+
+    <div class="metrics-grid mb-4">
+        <article class="card border-0 shadow-sm p-3">
+            <h5 class="small mb-2">Reservas creadas hoy</h5>
+            <div class="metrics-value">{{ daily_current.created_count }}</div>
+            <div class="metrics-delta metrics-{{ daily_comparison.created_count.direction }}">
+                {% if daily_comparison.created_count.direction == "up" %}▲{% elif daily_comparison.created_count.direction == "down" %}▼{% else %}■{% endif %}
+                {{ daily_comparison.created_count.percent|floatformat:1 }}% vs ayer
+            </div>
+        </article>
+        <article class="card border-0 shadow-sm p-3">
+            <h5 class="small mb-2">Confirmadas hoy</h5>
+            <div class="metrics-value">{{ daily_current.confirmed_count }}</div>
+            <div class="metrics-delta metrics-{{ daily_comparison.confirmed_count.direction }}">
+                {% if daily_comparison.confirmed_count.direction == "up" %}▲{% elif daily_comparison.confirmed_count.direction == "down" %}▼{% else %}■{% endif %}
+                {{ daily_comparison.confirmed_count.percent|floatformat:1 }}% vs ayer
+            </div>
+        </article>
+        <article class="card border-0 shadow-sm p-3">
+            <h5 class="small mb-2">Canceladas hoy</h5>
+            <div class="metrics-value">{{ daily_current.cancelled_count }}</div>
+            <div class="metrics-delta metrics-{{ daily_comparison.cancelled_count.direction }}">
+                {% if daily_comparison.cancelled_count.direction == "up" %}▲{% elif daily_comparison.cancelled_count.direction == "down" %}▼{% else %}■{% endif %}
+                {{ daily_comparison.cancelled_count.percent|floatformat:1 }}% vs ayer
+            </div>
+        </article>
+        <article class="card border-0 shadow-sm p-3">
+            <h5 class="small mb-2">Facturación hoy</h5>
+            <div class="metrics-value">€ {{ daily_current.revenue|floatformat:2 }}</div>
+            <div class="metrics-delta metrics-{{ daily_comparison.revenue.direction }}">
+                {% if daily_comparison.revenue.direction == "up" %}▲{% elif daily_comparison.revenue.direction == "down" %}▼{% else %}■{% endif %}
+                {{ daily_comparison.revenue.percent|floatformat:1 }}% vs ayer
+            </div>
+        </article>
+    </div>
+
+    <div class="row g-3 mb-4">
+        <div class="col-12 col-lg-6">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body">
+                    <h5 class="mb-3">Auditoría Diaria (últimos 7 días)</h5>
+                    <div class="table-responsive">
+                        <table class="table table-sm align-middle mb-0">
+                            <thead>
+                                <tr>
+                                    <th>Día</th>
+                                    <th>Creadas</th>
+                                    <th>Canceladas</th>
+                                    <th>Facturación</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for row in daily_audit %}
+                                <tr>
+                                    <td>{{ row.label }}</td>
+                                    <td>{{ row.created_count }}</td>
+                                    <td>{{ row.cancelled_count }}</td>
+                                    <td>€ {{ row.revenue|floatformat:2 }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-12 col-lg-6">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body">
+                    <h5 class="mb-3">Auditoría Mensual (últimos 6 meses)</h5>
+                    <div class="table-responsive">
+                        <table class="table table-sm align-middle mb-0">
+                            <thead>
+                                <tr>
+                                    <th>Mes</th>
+                                    <th>Creadas</th>
+                                    <th>Canceladas</th>
+                                    <th>Facturación</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for row in monthly_audit %}
+                                <tr>
+                                    <td>{{ row.label }}</td>
+                                    <td>{{ row.created_count }}</td>
+                                    <td>{{ row.cancelled_count }}</td>
+                                    <td>€ {{ row.revenue|floatformat:2 }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card border-0 shadow-sm">
+        <div class="card-body">
+            <h5 class="mb-3">Comparación Mensual</h5>
+            <div class="row g-3">
+                <div class="col-12 col-md-3">
+                    <div class="metrics-compact">
+                        <div class="small">Reservas creadas</div>
+                        <div class="fw-bold">{{ monthly_current.created_count }}</div>
+                        <div class="metrics-delta metrics-{{ monthly_comparison.created_count.direction }}">
+                            {{ monthly_comparison.created_count.percent|floatformat:1 }}% vs mes anterior
+                        </div>
+                    </div>
+                </div>
+                <div class="col-12 col-md-3">
+                    <div class="metrics-compact">
+                        <div class="small">Confirmadas</div>
+                        <div class="fw-bold">{{ monthly_current.confirmed_count }}</div>
+                        <div class="metrics-delta metrics-{{ monthly_comparison.confirmed_count.direction }}">
+                            {{ monthly_comparison.confirmed_count.percent|floatformat:1 }}% vs mes anterior
+                        </div>
+                    </div>
+                </div>
+                <div class="col-12 col-md-3">
+                    <div class="metrics-compact">
+                        <div class="small">Canceladas</div>
+                        <div class="fw-bold">{{ monthly_current.cancelled_count }}</div>
+                        <div class="metrics-delta metrics-{{ monthly_comparison.cancelled_count.direction }}">
+                            {{ monthly_comparison.cancelled_count.percent|floatformat:1 }}% vs mes anterior
+                        </div>
+                    </div>
+                </div>
+                <div class="col-12 col-md-3">
+                    <div class="metrics-compact">
+                        <div class="small">Facturación</div>
+                        <div class="fw-bold">€ {{ monthly_current.revenue|floatformat:2 }}</div>
+                        <div class="metrics-delta metrics-{{ monthly_comparison.revenue.direction }}">
+                            {{ monthly_comparison.revenue.percent|floatformat:1 }}% vs mes anterior
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock content%}
